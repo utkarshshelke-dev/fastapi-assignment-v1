@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>Live Restaurant Recommendations</h3>
+<ul id="list"></ul>
+
+<script>
+const ws = new WebSocket("ws://localhost:8000/ws/location");
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  data.restaurants.forEach(r => {
+    list.innerHTML += `<li>${r.name} - ${r.distance_km} km</li>`;
+  });
+};
+
+// simulate live movement
+setInterval(() => {
+  ws.send(JSON.stringify({
+    lat: 12.9716 + Math.random() * 0.002,
+    lng: 77.5946 + Math.random() * 0.002
+  }));
+}, 3000);
+</script>
+</body>
+</html>
